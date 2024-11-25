@@ -10,10 +10,6 @@ PIRImpl::PIRImpl(const int pin, const int calibrationTime)
 
     pinMode(pin, INPUT);
 
-    startCalibrating();
-
-    waitCalibrationDone();
-
     sync();
 };
 
@@ -45,5 +41,5 @@ void PIRImpl::waitCalibrationDone()
 {
     delay(calibrationTime);
     this->isReady = true;
-    
+
 }

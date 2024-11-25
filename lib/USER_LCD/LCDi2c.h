@@ -3,6 +3,7 @@
 
 #include "UserLCD.h"
 #include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 
 class LCDi2c : public UserLCD
 {

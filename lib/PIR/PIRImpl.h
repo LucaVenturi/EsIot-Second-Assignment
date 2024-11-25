@@ -7,12 +7,13 @@ class PIRImpl : public PIR
 {
     public:
         PIRImpl(const int pin, const int calibrationTime);
-        virtual bool userDetected();
-        virtual bool isReady();
+        bool userDetected();
+        bool isReady();
+        void startCalibrating();
+        void waitCalibrationDone();
 
         // Inherited.
-        virtual void sync();
-        virtual long getLastSyncTime();
+        void sync();
 
     protected:
         virtual void updateSyncTime();
@@ -25,8 +26,6 @@ class PIRImpl : public PIR
         long calibrationStartTime;
         long lastTimeSync;
 
-        void startCalibrating();
-        void waitCalibrationDone();
 };
 
 
