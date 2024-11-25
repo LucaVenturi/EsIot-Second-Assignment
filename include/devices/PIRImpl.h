@@ -21,7 +21,7 @@ class PIRImpl : public PIR
     private:
         int pin;
         bool detected;
-        bool isReady;
+        bool ready;
         long calibrationTime;
         long calibrationStartTime;
         long lastTimeSync;

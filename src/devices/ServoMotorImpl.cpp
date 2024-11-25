@@ -1,5 +1,5 @@
-#include "ServoMotorImpl.h"
-#include "Arduino.h"
+#include "devices/ServoMotorImpl.h"
+#include <Arduino.h>
 
 ServoMotorImpl::ServoMotorImpl(int pin){
   this->pin = pin;  

@@ -1,5 +1,5 @@
-#include "DoorImpl.h"
-#include "ServoMotorImpl.h"
+#include "devices/DoorImpl.h"
+#include "devices/ServoMotorImpl.h"
 #include <Arduino.h>
 
 DoorImpl::DoorImpl(const int pin) : servoMotor(new ServoMotorImpl(pin))

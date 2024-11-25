@@ -1,7 +1,7 @@
 #ifndef __BUTTON__
 #define __BUTTON__
 
-#include "Synchronizable.h";
+#include "Synchronizable.h"
 
 class Button : public Synchronizable {
  

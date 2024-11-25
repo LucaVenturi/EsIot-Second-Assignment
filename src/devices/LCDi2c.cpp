@@ -1,4 +1,4 @@
-#include "LCDi2c.h"
+#include "devices/LCDi2c.h"
 
 LCDi2c::LCDi2c(int address, int columns, int rows) : lcd(address, columns, rows), rows(rows), cols(cols)
 {

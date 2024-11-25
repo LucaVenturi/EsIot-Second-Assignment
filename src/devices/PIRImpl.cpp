@@ -1,4 +1,4 @@
-#include "PIRImpl.h"
+#include "devices/PIRImpl.h"
 #include <Arduino.h>
 
 PIRImpl::PIRImpl(const int pin, const int calibrationTime)
@@ -6,7 +6,7 @@ PIRImpl::PIRImpl(const int pin, const int calibrationTime)
     this->pin = pin;
     this->calibrationTime = calibrationTime;
     this->detected = false;
-    this->isReady = true;
+    this->ready = true;
 
     pinMode(pin, INPUT);
 
@@ -15,7 +15,7 @@ PIRImpl::PIRImpl(const int pin, const int calibrationTime)
 
 bool PIRImpl::userDetected()
 {
-    if (!this->isReady)
+    if (!this->isReady())
         return false;
     
     return this->detected;
@@ -23,7 +23,7 @@ bool PIRImpl::userDetected()
 
 void PIRImpl::sync()
 {
-    if (!this->isReady)
+    if (!this->isReady())
         return;
     
     this->detected = digitalRead(pin);
@@ -40,6 +40,6 @@ void PIRImpl::startCalibrating()
 void PIRImpl::waitCalibrationDone()
 {
     delay(calibrationTime);
-    this->isReady = true;
+    this->ready = true;
 
 }

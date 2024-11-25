@@ -2,8 +2,8 @@
 #define __USER_DETECT__
 
 #include "Task.h"
-#include "Led.h"
-#include <PIR.h>
+#include "devices/Led.h"
+#include "devices/PIR.h"
 
 class UserDetectionTask: public Task 
 {
