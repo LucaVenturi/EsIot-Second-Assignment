@@ -19,7 +19,6 @@ void TempSensorImpl::sync()
     this->temp = (voltage - 0.5) * 100;
 
     this->updateSyncTime();
-
 }
 
 int TempSensorImpl::getTemperature()
