@@ -3,12 +3,16 @@
 
 #include "tasks/Task.h"
 #include "devices/Light.h"
+#include "Observer.h"
 
-class LightsControlTask : public Task
+
+class LightsControlTask : public Task, public Observer
 {
 private:
     Light* L1;
     Light* L2;
+    Event lastEvent;
+    bool eventReady;
     enum {
         OK,
         FULL,
@@ -19,6 +23,7 @@ public:
     ~LightsControlTask();
     void init(int period);
     void tick();
+    void update(Event event);
 };
 
 

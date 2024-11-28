@@ -2,10 +2,11 @@
 #define __USER_DETECT__
 
 #include "Task.h"
+#include "Subject.h"
 #include "devices/Led.h"
 #include "devices/PIR.h"
 
-class UserDetectionTask: public Task 
+class UserDetectionTask: public Task, public Subject
 {
 private:
     // const Light* L1;

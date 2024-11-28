@@ -25,14 +25,18 @@ void UserDetectionTask::tick()
         case CALIBRATING:
             this->userDetector->waitCalibrationDone();
             this->state = DETECTING;
+            // Activate other tasks.
             break;
 
         case DETECTING:
             this->userDetector->sync();
-            if (this->userDetector->userDetected())
+            if (this->userDetector->userDetected()){
                 this->state = DETECTED;
                 // Notify that user is near.
-                // Activate other tasks.
+                this->notify(MOTION_DETECTED);
+                // Abilita la task per il controllo input utente e porta.
+                // ...
+            }
             break;
             
         case DETECTED:
