@@ -25,13 +25,14 @@ void TemperatureMonitoringTask::tick()
         if (this->temperatureSensor->getTemperature() >= DANGER_TEMP /* && tempo in overheating >= alarm_time */)
         {
             this->state = ALARM;
+            this->notify(TEMP_HIGH);
         }
-        
         break;
 
     case ALARM:
         // se temp sotto la soglia o se l'operatore fa quel che deve fare.
         this->state = TEMP_OK;
+        this->notify(TEMP_LOW);
         break;
     }
 }

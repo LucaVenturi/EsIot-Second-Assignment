@@ -9,10 +9,7 @@
 class UserDetectionTask: public Task, public Subject
 {
 private:
-    // const Light* L1;
-    // const Light* L2;
     PIR* userDetector;
-
     enum {
         CALIBRATING,
         DETECTING,
@@ -26,4 +23,3 @@ public:
 };
 
 #endif
-

@@ -3,8 +3,9 @@
 
 #include <tasks/Task.h>
 #include <devices/Sonar.h>
+#include "Subject.h"
 
-class WasteLevelDetectionTask : public Task
+class WasteLevelDetectionTask : public Task, public Subject
 {
 private:
     Sonar* wasteLvlDetector;

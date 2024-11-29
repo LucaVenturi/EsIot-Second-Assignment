@@ -3,8 +3,9 @@
 
 #include "tasks/Task.h"
 #include "devices/TempSensor.h"
+#include "Subject.h"
 
-class TemperatureMonitoringTask : public Task
+class TemperatureMonitoringTask : public Task, public Subject
 {
 private:
     TempSensor* temperatureSensor;
