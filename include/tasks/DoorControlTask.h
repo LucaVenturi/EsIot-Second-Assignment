@@ -11,6 +11,8 @@ private:
     Door* door;
     Event lastEvent;
     bool eventReady;
+    long timeInState;
+    const long timeout;
     enum {
         OPENING,
         OPEN,
@@ -20,7 +22,7 @@ private:
         EMPTYING
     } state;
 public:
-    DoorControlTask(Door* d);
+    DoorControlTask(Door* d, const long timeout);
     ~DoorControlTask();
     void init(int period);
     void tick();

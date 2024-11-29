@@ -1,14 +1,15 @@
 #include "tasks/DoorControlTask.h"
+#include <Arduino.h>
 
-DoorControlTask::DoorControlTask(Door* d) : door(d)
+DoorControlTask::DoorControlTask(Door* d, long t) : door(d), timeout(t)
 {
-
 }
 
 void DoorControlTask::init(int period)
 {
     Task::init(period);
     this->state = CLOSE;
+    this->timeInState = millis();
 }
 
 void DoorControlTask::tick()
@@ -17,9 +18,10 @@ void DoorControlTask::tick()
     {
     case OPEN:
         // se segnale di chiudere o timeout passa a closing.
-        if (eventReady && lastEvent == Event::BTN_CLOSE_PRESSED)
+        if ( (eventReady && lastEvent == Event::BTN_CLOSE_PRESSED) || (this->timeInState >= this->timeout) )
         {
             this->state = CLOSING;
+            this->timeInState = millis();
             eventReady = false;
         }
         break;
@@ -27,6 +29,7 @@ void DoorControlTask::tick()
     case OPENING:
         this->door->open();
         this->state = OPEN;
+        this->timeInState = millis();
         break;
 
     case CLOSE:
@@ -34,9 +37,15 @@ void DoorControlTask::tick()
         if (this->eventReady)
         {
             if (this->lastEvent == Event::BTN_OPEN_PRESSED)
+            {
                 this->state = OPENING;
+                this->timeInState = millis();
+            }
             else if (this->lastEvent == Event::EMPTYING)
+            {
                 this->state = TO_EMPTYING;
+                this->timeInState = millis();
+            }
             eventReady = false;
         }
         
@@ -45,15 +54,21 @@ void DoorControlTask::tick()
     case CLOSING:
         this->door->close();
         this->state = CLOSE;
+        this->timeInState = millis();
         break;
 
     case TO_EMPTYING:
         this->door->reverse();
         this->state = EMPTYING;
+        this->timeInState = millis();
         break;
 
     case EMPTYING:
-        // DOPO T SECONDI TORNA A CLOSING
+        if (this->timeInState >= this->timeout)
+        {
+            this->state = CLOSING;
+            this->timeInState = millis();
+        }
         break;
     }
 }
