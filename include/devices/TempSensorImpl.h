@@ -3,7 +3,7 @@
 
 #include "TempSensor.h"
 
-class TempSensorImpl : TempSensor
+class TempSensorImpl : public TempSensor
 {
     private:
         const int pin;

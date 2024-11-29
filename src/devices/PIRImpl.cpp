@@ -21,6 +21,11 @@ bool PIRImpl::userDetected()
     return this->detected;
 }
 
+bool PIRImpl::isReady()
+{
+    return this->ready;
+}
+
 void PIRImpl::sync()
 {
     if (!this->isReady())

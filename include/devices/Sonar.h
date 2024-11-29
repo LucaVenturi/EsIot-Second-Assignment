@@ -6,7 +6,6 @@
 class Sonar : public Synchronizable
 {
     public:
-        Sonar();
         virtual float getDistance() = 0;
 };
 

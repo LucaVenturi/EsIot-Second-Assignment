@@ -8,7 +8,6 @@ class TempSensor : public Synchronizable
     private:
         /* data */
     public:
-        TempSensor();
         virtual int getTemperature() = 0;
 };
 

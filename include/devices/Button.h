@@ -6,7 +6,6 @@
 class Button : public Synchronizable {
  
 public:
-  Button();
   virtual bool isPressed() = 0;
 };
 

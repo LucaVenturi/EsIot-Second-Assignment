@@ -8,7 +8,6 @@ class UserLCD
     private:
         
     public:
-        UserLCD();
         virtual void write(const String msg) = 0;
         virtual void clear() = 0;
 };

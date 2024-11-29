@@ -15,16 +15,12 @@ class PIRImpl : public PIR
         // Inherited.
         void sync();
 
-    protected:
-        virtual void updateSyncTime();
-
     private:
         int pin;
         bool detected;
         bool ready;
         long calibrationTime;
         long calibrationStartTime;
-        long lastTimeSync;
 
 };
 
