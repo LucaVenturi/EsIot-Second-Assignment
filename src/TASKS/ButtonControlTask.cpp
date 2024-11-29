@@ -6,6 +6,7 @@ ButtonControlTask::ButtonControlTask(Button *open, Button *close) : bOpen(open),
 
 void ButtonControlTask::init(int period)
 {
+    Task::init(period);
     this->state = IDLE;
 }
 
