@@ -14,6 +14,7 @@ void DoorControlTask::init(int period)
 
 void DoorControlTask::tick()
 {
+    Serial.println("door state: " + String(this->state));
     switch (this->state)
     {
     case OPEN:
@@ -27,16 +28,20 @@ void DoorControlTask::tick()
         break;
 
     case OPENING:
-        this->door->open();
+        Serial.println("Start opening...");
+        // this->door->open();
+        Serial.println("opening done");
         this->state = OPEN;
+        Serial.println("cambiato stato");
         this->timeInState = millis();
+        Serial.println("Memorizzato il tempo");
         break;
 
     case CLOSE:
         // se segnale di open o empty passa allo stato corretto.
         if (this->eventReady)
         {
-            if (this->lastEvent == Event::BTN_OPEN_PRESSED)
+            if (this->lastEvent == BTN_OPEN_PRESSED)
             {
                 this->state = OPENING;
                 this->timeInState = millis();

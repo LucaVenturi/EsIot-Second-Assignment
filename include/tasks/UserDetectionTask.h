@@ -10,14 +10,17 @@ class UserDetectionTask: public Task, public Subject
 {
 private:
     PIR* userDetector;
+    unsigned long timeout;
+    unsigned long timeUndetected;
     enum {
         CALIBRATING,
         DETECTING,
-        DETECTED
+        DETECTED,
+        WAIT_UNDETECTED
     } state;
 
 public:
-    UserDetectionTask(PIR* userDetector);
+    UserDetectionTask(PIR* userDetector, unsigned long timeout);
     void init(int period);
     void tick();
 };

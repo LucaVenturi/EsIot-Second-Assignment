@@ -6,7 +6,7 @@ PIRImpl::PIRImpl(const int pin, const int calibrationTime)
     this->pin = pin;
     this->calibrationTime = calibrationTime;
     this->detected = false;
-    this->ready = true;
+    this->ready = false;
 
     pinMode(pin, INPUT);
 

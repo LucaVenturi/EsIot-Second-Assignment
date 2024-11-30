@@ -1,6 +1,7 @@
 #include "tasks/UserDetectionTask.h"
+#include <Arduino.h>
 
-UserDetectionTask::UserDetectionTask(PIR *userDetector) : userDetector(userDetector)
+UserDetectionTask::UserDetectionTask(PIR *userDetector, unsigned long t) : userDetector(userDetector), timeout(t)
 {
 }
 
@@ -20,6 +21,7 @@ void UserDetectionTask::init(int period)
 
 void UserDetectionTask::tick()
 {
+    //Serial.println(String(this->state));
     switch (this->state)
     {
         case CALIBRATING:
@@ -41,6 +43,29 @@ void UserDetectionTask::tick()
             
         case DETECTED:
             // se nn rileva movim per t secondi torna a DETECTING.
+            this->userDetector->sync();
+            if (!this->userDetector->userDetected())
+            {
+                this->state = WAIT_UNDETECTED;
+                this->timeUndetected = millis();
+            }
+            
+            break;
+
+        case WAIT_UNDETECTED:
+            // se nn rileva movim per t secondi torna a DETECTING.
+            this->userDetector->sync();
+            if (this->userDetector->userDetected())
+            {
+                this->state = DETECTED;
+            }
+            
+            if (millis() - timeUndetected >= timeout)
+            {
+                this->state = DETECTING;
+                this->notify(NO_MOTION);
+            }
+            
             break;
     }
 }
