@@ -37,11 +37,13 @@ void UserDetectionTask::tick()
                 this->notify(MOTION_DETECTED);
                 // Abilita la task per il controllo input utente e porta.
                 // ...
+                // abilita button task
+                // abilita door control task
             }
             break;
             
         case DETECTED:
-            // se nn rileva movim per t secondi torna a DETECTING.
+            // se nn rileva movim passa a wait undetected.
             this->userDetector->sync();
             if (!this->userDetector->userDetected())
             {
@@ -52,7 +54,7 @@ void UserDetectionTask::tick()
             break;
 
         case WAIT_UNDETECTED:
-            // se nn rileva movim per t secondi torna a DETECTING.
+            // se nn rileva movim per t secondi torna a DETECTING e disabilita task.
             this->userDetector->sync();
             if (this->userDetector->userDetected())
             {
@@ -63,6 +65,9 @@ void UserDetectionTask::tick()
             {
                 this->state = DETECTING;
                 this->notify(NO_MOTION);
+                // disabilita task bottoni, porta, livello, lcd, led
+                // mantiene attivo sensore temperatura per emergenze
+                // semi sleep, disattiva tutto tranne pir, led e sensore temp.
             }
             
             break;
