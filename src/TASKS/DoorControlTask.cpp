@@ -21,7 +21,14 @@ void DoorControlTask::tick()
     {
     case OPEN:
         // se segnale di chiudere o timeout passa a closing.
-        if ( ( eventReady && lastEvent == Event::BTN_CLOSE_PRESSED ) || ( millis() - this->timeInState >= this->timeout ) )
+        bool isEventCritical = eventReady && 
+            (lastEvent == Event::BTN_CLOSE_PRESSED || 
+            lastEvent == Event::CONTAINER_FULL || 
+            lastEvent == Event::TEMP_HIGH);
+
+        bool isTimeoutExpired = millis() - this->timeInState >= this->timeout;
+        
+        if (isEventCritical || isTimeoutExpired)
         {
             this->door->on();
             this->door->close();

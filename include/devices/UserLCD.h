@@ -12,5 +12,4 @@ class UserLCD
         virtual void clear() = 0;
 };
 
-
 #endif // __USERLCD__
