@@ -14,6 +14,13 @@
 #include "devices/Door.h"
 #include "devices/DoorImpl.h"
 #include "tasks/DoorControlTask.h"
+#include "devices/Light.h"
+#include "devices/Led.h"
+#include "tasks/LightsControlTask.h"
+#include "devices/SonarImpl.h"
+#include "tasks/WasteLevelDetectionTask.h"
+
+
 
 Scheduler sched;
 
@@ -26,6 +33,11 @@ void setup() {
     Task* userDetection = new UserDetectionTask(userDetector, 10000);
     userDetection->init(100);
 
+    /* Create task for waste level monitoring. */
+    Sonar* wasteDetector = new SonarImpl(8, 9, 22);
+    WasteLevelDetectionTask* wasteLvlDetection = new WasteLevelDetectionTask(wasteDetector);
+    wasteLvlDetection->init(200);
+
     /* Create task for user input via buttons */
     Button* btnOpen = new ButtonImpl(4);
     Button* btnClose = new ButtonImpl(3);
@@ -33,8 +45,9 @@ void setup() {
     buttonControl->init(100);
 
     // /* Create task for temperature monitoring */
-    // TempSensor* tempSensor = new TempSensorImpl(A0);
-    // Task* tempMonitor = new TemperatureMonitoringTask(tempSensor);
+    TempSensor* tempSensor = new TempSensorImpl(A0);
+    TemperatureMonitoringTask* tempMonitor = new TemperatureMonitoringTask(tempSensor);
+    tempMonitor->init(200);
 
     /* Create task for controlling the door, implemented via a servo simulating a door*/
     Door* door = new DoorImpl(10);
@@ -42,12 +55,26 @@ void setup() {
     buttonControl->attach(doorControl);
     doorControl->init(500);
 
+    Light* l1 = new Led(5);
+    Light* l2 = new Led(6);
+    LightsControlTask* lightsControl = new LightsControlTask(l1, l2);
+    buttonControl->attach(lightsControl);
+    tempMonitor->attach(lightsControl);
+    wasteLvlDetection->attach(lightsControl);
+    lightsControl->init(200);
 
     sched.addTask(userDetection);
+    sched.addTask(wasteLvlDetection);
+    sched.addTask(tempMonitor);
     sched.addTask(buttonControl);
     sched.addTask(doorControl);
+    sched.addTask(lightsControl);
 }
 
 void loop() {
+    // long a = millis();
+    //Serial.println(".");
     sched.schedule();
+    //Serial.println("dopo schedule");
+    //Serial.println("tempo passato: " + String(millis() - a));
 }

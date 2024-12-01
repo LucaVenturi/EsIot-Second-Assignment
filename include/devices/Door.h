@@ -1,4 +1,4 @@
-#if !defined(__DOOR__)
+#ifndef __DOOR__
 #define __DOOR__
 
 class Door
@@ -7,6 +7,9 @@ class Door
         virtual void open() = 0;
         virtual void close() = 0;
         virtual void reverse() = 0;
+        virtual void on() = 0;
+        virtual void off() = 0;
+        virtual bool isMoving() = 0;
 
 };
 

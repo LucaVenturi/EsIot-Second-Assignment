@@ -11,13 +11,13 @@ private:
     Door* door;
     Event lastEvent;
     bool eventReady;
-    long timeInState;
-    const long timeout;
+    unsigned long timeInState;
+    const unsigned long timeout;
     enum {
         OPENING,
         OPEN,
         CLOSING,
-        CLOSE,
+        CLOSED,
         TO_EMPTYING,
         EMPTYING
     } state;

@@ -9,7 +9,7 @@ class WasteLevelDetectionTask : public Task, public Subject
 {
 private:
     Sonar* wasteLvlDetector;
-    const float THRESHOLD = 0.1;
+    const float THRESHOLD = 0.05;
     enum {
         NOT_FULL,
         FULL

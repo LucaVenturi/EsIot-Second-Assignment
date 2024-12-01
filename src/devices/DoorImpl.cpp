@@ -4,42 +4,43 @@
 
 DoorImpl::DoorImpl(const int pin) : servoMotor(new ServoMotorImpl(pin))
 {
+}
 
+void DoorImpl::moveTo(const int deg)
+{
+    if (!this->isMoving())
+    {
+        this->movingUntil = millis() + deg * 2;
+        this->servoMotor->setPosition( constrain(deg, 0, 180) );
+    }
 }
 
 void DoorImpl::open()
 {
-    rotateByDegrees(90);
+    moveTo(180);
 }
 
 void DoorImpl::close()
 {
-    rotateByDegrees(-this->pos);
+    moveTo(90);
 }
 
 void DoorImpl::reverse()
 {
-    rotateByDegrees(-90);
+    moveTo(0);
 }
 
-void DoorImpl::rotateByDegrees(int deg)
+void DoorImpl::on()
 {
-    if (deg > 0)
-    {
-        this->delta = 1;
-    }
-    else
-    {
-        this->delta = -1;
-    }
-
-    deg = abs(deg);
-    
     this->servoMotor->on();
-    for (int i = 0; i < deg; i++) {
-        this->servoMotor->setPosition(pos);         
-        delay(2);
-        this->pos += this->delta;
-    }
+}
+
+void DoorImpl::off()
+{
     this->servoMotor->off();
+}
+
+bool DoorImpl::isMoving()
+{
+    return ( millis() >= this->movingUntil ) ? false : true;
 }

@@ -7,7 +7,6 @@ UserDetectionTask::UserDetectionTask(PIR *userDetector, unsigned long t) : userD
 
 void UserDetectionTask::init(int period)
 {
-    Task::init(period);
     if (!this->userDetector->isReady())
     {
         this->userDetector->startCalibrating();
@@ -16,7 +15,7 @@ void UserDetectionTask::init(int period)
     {
         this->state = DETECTING;
     }
-    
+    Task::init(period);
 }
 
 void UserDetectionTask::tick()

@@ -8,16 +8,19 @@ class DoorImpl : public Door
 {
     private:
         ServoMotor* servoMotor;
-        int pos = 0;
-        int delta = 1;
+        int pos = 90;
+        unsigned long movingUntil = 0;
 
-        void rotateByDegrees(int deg);
+        void moveTo(const int deg);
 
     public:
         DoorImpl(int servoPin);
         void open();
         void close();
         void reverse();
+        void on();
+        void off();
+        bool isMoving();
 };
 
 

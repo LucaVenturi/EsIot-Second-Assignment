@@ -8,7 +8,7 @@ class Task {
   
 public:
   virtual void init(int period){
-    myPeriod = period;  
+    myPeriod = period;
     timeElapsed = 0;
     active = true;
   }

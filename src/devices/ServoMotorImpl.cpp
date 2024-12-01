@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 ServoMotorImpl::ServoMotorImpl(int pin){
-  this->pin = pin;  
+  this->pin = pin;
 } 
 
 void ServoMotorImpl::on(){

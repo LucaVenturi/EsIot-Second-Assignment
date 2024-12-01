@@ -14,8 +14,8 @@ public:
   void off();
     
 private:
-  int pin; 
-  Servo motor; 
+  int pin;
+  Servo motor;
 };
 
 #endif

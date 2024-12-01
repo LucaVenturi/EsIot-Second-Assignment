@@ -8,19 +8,23 @@ DoorControlTask::DoorControlTask(Door* d, long t) : door(d), timeout(t)
 void DoorControlTask::init(int period)
 {
     Task::init(period);
-    this->state = CLOSE;
+    this->state = CLOSED;
     this->timeInState = millis();
 }
 
 void DoorControlTask::tick()
 {
-    Serial.println("door state: " + String(this->state));
+    //Serial.println("door state: " + String(this->state));
+    //long a = millis();
+
     switch (this->state)
     {
     case OPEN:
         // se segnale di chiudere o timeout passa a closing.
-        if ( (eventReady && lastEvent == Event::BTN_CLOSE_PRESSED) || (this->timeInState >= this->timeout) )
+        if ( ( eventReady && lastEvent == Event::BTN_CLOSE_PRESSED ) || ( millis() - this->timeInState >= this->timeout ) )
         {
+            this->door->on();
+            this->door->close();
             this->state = CLOSING;
             this->timeInState = millis();
             eventReady = false;
@@ -28,54 +32,78 @@ void DoorControlTask::tick()
         break;
 
     case OPENING:
-        Serial.println("Start opening...");
+
         // this->door->open();
-        Serial.println("opening done");
-        this->state = OPEN;
-        Serial.println("cambiato stato");
-        this->timeInState = millis();
-        Serial.println("Memorizzato il tempo");
+        // this->state = OPEN;
+        // this->timeInState = millis();
+
+        if (!this->door->isMoving())
+        {
+            this->door->off();
+            this->state = OPEN;
+            this->timeInState = millis();
+        }
+
         break;
 
-    case CLOSE:
+    case CLOSED:
         // se segnale di open o empty passa allo stato corretto.
         if (this->eventReady)
         {
             if (this->lastEvent == BTN_OPEN_PRESSED)
             {
+                //Serial.println("accendo porta");
+                this->door->on();
+                //Serial.println("apro porta");
+                this->door->open();
+                //Serial.println("cambio stato");
                 this->state = OPENING;
                 this->timeInState = millis();
             }
             else if (this->lastEvent == Event::EMPTYING)
             {
                 this->state = TO_EMPTYING;
+                this->door->on();
+                this->door->reverse();
                 this->timeInState = millis();
             }
+            //Serial.println("tolgo evento da coda");
             eventReady = false;
+            //Serial.println("Tempo impiegato: " + String(millis() - a));
         }
         
         break;
 
     case CLOSING:
-        this->door->close();
-        this->state = CLOSE;
-        this->timeInState = millis();
+        if (!this->door->isMoving())
+        {
+            this->door->off();
+            this->state = CLOSED;
+            this->timeInState = millis();
+        }
         break;
 
     case TO_EMPTYING:
-        this->door->reverse();
-        this->state = EMPTYING;
-        this->timeInState = millis();
+        if (!this->door->isMoving())
+        {
+            this->door->off();
+            this->state = EMPTYING;
+            this->timeInState = millis();
+        }
         break;
 
     case EMPTYING:
-        if (this->timeInState >= this->timeout)
+        if (millis() - this->timeInState >= this->timeout)
         {
+            this->door->on();
+            this->door->close();
             this->state = CLOSING;
             this->timeInState = millis();
         }
         break;
     }
+
+    //Serial.println("uscito da switch.");
 }
 
 void DoorControlTask::update(Event event) {
