@@ -9,7 +9,7 @@ class Scheduler {
   
   int basePeriod;
   int nTasks;
-  Task* taskList[MAX_TASKS];  
+  Task* taskList[MAX_TASKS];
 
 public:
   void init(int basePeriod);  

@@ -3,7 +3,6 @@
 #include <MsTimer2.h>
 
 volatile bool timerFlag;
-
 void timerHandler(void){
   timerFlag = true;
 }

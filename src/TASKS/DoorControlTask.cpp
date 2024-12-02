@@ -8,6 +8,8 @@ DoorControlTask::DoorControlTask(Door* d, long t) : door(d), timeout(t)
 void DoorControlTask::init(int period)
 {
     Task::init(period);
+
+    // TODO: VERIFICARE CHE VADA SU CLOSED.
     this->state = CLOSED;
     this->timeInState = millis();
 }
@@ -15,7 +17,6 @@ void DoorControlTask::init(int period)
 void DoorControlTask::tick()
 {
     //Serial.println("door state: " + String(this->state));
-    //long a = millis();
 
     switch (this->state)
     {
@@ -28,13 +29,14 @@ void DoorControlTask::tick()
 
         bool isTimeoutExpired = millis() - this->timeInState >= this->timeout;
         
+
         if (isEventCritical || isTimeoutExpired)
         {
             this->door->on();
             this->door->close();
             this->state = CLOSING;
-            this->timeInState = millis();
-            eventReady = false;
+            this->notify(Event::WASTE_RECEIVED);
+            this->timeInState = millis();            
         }
         break;
 
@@ -104,6 +106,7 @@ void DoorControlTask::tick()
         {
             this->door->on();
             this->door->close();
+            this->notify(Event::DONE_EMPTYING);
             this->state = CLOSING;
             this->timeInState = millis();
         }

@@ -4,8 +4,10 @@
 #include "devices/Door.h"
 #include "tasks/Task.h"
 #include "Observer.h"
+#include "Subject.h"
 
-class DoorControlTask : public Task, public Observer
+
+class DoorControlTask : public Task, public Observer, public Subject
 {
 private:
     Door* door;

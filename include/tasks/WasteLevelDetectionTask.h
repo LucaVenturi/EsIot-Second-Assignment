@@ -5,11 +5,13 @@
 #include <devices/Sonar.h>
 #include "Subject.h"
 
-class WasteLevelDetectionTask : public Task, public Subject
+class WasteLevelDetectionTask : public Task, public Subject, public Observer
 {
 private:
     Sonar* wasteLvlDetector;
     const float THRESHOLD = 0.05;
+    Event lastEvent;
+    bool eventReady = false;
     enum {
         NOT_FULL,
         FULL
@@ -19,6 +21,7 @@ public:
     ~WasteLevelDetectionTask();
     void init(int period);
     void tick();
+    void update(Event e);
 };
 
 #endif // __WASTEDETECTIONTASK__

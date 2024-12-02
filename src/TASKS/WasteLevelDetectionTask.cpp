@@ -22,30 +22,26 @@ void WasteLevelDetectionTask::tick()
                 this->state = FULL;
                 // signal other tasks the container is full;
                 this->notify(CONTAINER_FULL);
+                // disabilita altre task.
             }
             
             break;
         case FULL:
-            //quanto segue oppure semplicemente controllo il livello e aspetto che una altra task riattivi questa. questa la spengo al passaggio di stato.
-            
-            // // Aspetta una notifica dalla task di svuotamento
-            // if (isContainerEmpty) // Flag globale settato da un'altra task
-            // {
-            //     this->state = NOT_FULL;
-            //     isContainerEmpty = false; // Resetta il flag
-            //     // Puoi anche aggiungere un'azione per re-inizializzare lo stato
-            // }
-
-
-            // legge evento ricevuto da operatore.
-            // se container svuotato procede.
-            // if (evento)
-            // {
-            //     this->state = NOT_FULL;
-            //     this->notify(CONTAINER_EMPTY);
-            //     togli evento da coda // caca
-            // }
+            // Se riceve che il container è stato svuotato torna a NOT_FULL, se poi era un falso tornerà qui.
+            if (eventReady)
+            {
+                if (this->lastEvent == Event::DONE_EMPTYING)
+                {
+                    this->state = NOT_FULL;
+                    this->notify(Event::CONTAINER_EMPTY);
+                }
+            }
             break;
     }
 }
 
+void WasteLevelDetectionTask::update(Event e)
+{
+    this->eventReady = true;
+    this->lastEvent = e;
+}

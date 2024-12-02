@@ -3,17 +3,17 @@
 
 #include "tasks/Task.h"
 #include "Observer.h"
-#include <LiquidCrystal_I2C.h>
+#include "devices/UserLCD.h"
 
 class LCDDisplayTask : public Task, public Observer
 {
 private:
-    LiquidCrystal_I2C* lcd; // Puntatore al display LCD
+    UserLCD* lcd; // Puntatore al display LCD
     String message;        // Messaggio da visualizzare sul display
     bool updated;          // Flag per sapere se il messaggio è stato aggiornato
 
 public:
-    LCDDisplayTask(LiquidCrystal_I2C* lcd);
+    LCDDisplayTask(UserLCD* lcd);
     ~LCDDisplayTask();
 
     void init(int period);

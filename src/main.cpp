@@ -25,12 +25,12 @@
 Scheduler sched;
 
 void setup() {
-    Serial.begin(9600);
+    //Serial.begin(9600);
     sched.init(100);
 
     /* Create task for the user detection, needs a user detector, in this case a PIR */
     PIR* userDetector = new PIRImpl(2 /*pin*/, 5000 /* calibration time*/);
-    Task* userDetection = new UserDetectionTask(userDetector, 10000);
+    Task* userDetection = new UserDetectionTask(userDetector, 2, 10000);
     userDetection->init(100);
 
     /* Create task for waste level monitoring. */
@@ -68,6 +68,7 @@ void setup() {
     OperatorCommunicationTask* commTask = new OperatorCommunicationTask();
     commTask->attach(tempMonitor);
     commTask->attach(doorControl);
+    commTask->init(500);
 
     sched.addTask(userDetection);
     sched.addTask(wasteLvlDetection);
@@ -79,9 +80,5 @@ void setup() {
 }
 
 void loop() {
-    // long a = millis();
-    //Serial.println(".");
     sched.schedule();
-    //Serial.println("dopo schedule");
-    //Serial.println("tempo passato: " + String(millis() - a));
 }
