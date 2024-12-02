@@ -11,6 +11,16 @@ private:
     UserLCD* lcd; // Puntatore al display LCD
     String message;        // Messaggio da visualizzare sul display
     bool updated;          // Flag per sapere se il messaggio è stato aggiornato
+    bool eventReady;
+    Event lastEvent;
+    enum {
+        NONE,
+        USER_NEAR,
+        USER_INPUTTING,
+        ACK_WASTE_RECEIVED,
+        TEMP_PROBLEM,
+        CONTAINER_FULL
+    } state;
 
 public:
     LCDDisplayTask(UserLCD* lcd);
@@ -20,7 +30,7 @@ public:
     void tick();
     
     // Metodo dell'interfaccia Observer
-    void update(int event);
+    void update(Event event);
 };
 
 #endif // __LCDTASK__

@@ -2,11 +2,13 @@
 
 bool ControllingTask::addTaskToBeControlled(Task *t)
 {
-    if (this->nTasks < MAX_TASKS)
+    if (this->nTasks < MAX_CONTROLLED_TASKS)
     {
         this->tasksToControl[nTasks] = t;
         this->nTasks++;
+        return true;
     }
+    return false;
 }
 
 void ControllingTask::enableAllTasks()

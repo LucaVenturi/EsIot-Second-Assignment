@@ -23,6 +23,7 @@ void WasteLevelDetectionTask::tick()
                 // signal other tasks the container is full;
                 this->notify(CONTAINER_FULL);
                 // disabilita altre task.
+                this->disableAllTasks();
             }
             
             break;
@@ -34,6 +35,7 @@ void WasteLevelDetectionTask::tick()
                 {
                     this->state = NOT_FULL;
                     this->notify(Event::CONTAINER_EMPTY);
+                    this->enableAllTasks();
                 }
             }
             break;

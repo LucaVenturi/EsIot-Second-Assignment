@@ -70,6 +70,9 @@ void setup() {
     commTask->attach(doorControl);
     commTask->init(500);
 
+    wasteLvlDetection->addTaskToBeControlled(buttonControl);
+    tempMonitor->addTaskToBeControlled(buttonControl);
+
     sched.addTask(userDetection);
     sched.addTask(wasteLvlDetection);
     sched.addTask(tempMonitor);

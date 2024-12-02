@@ -1,11 +1,11 @@
 #if !defined(__TEMPMONITORTASK)
 #define __TEMPMONITORTASK
 
-#include "tasks/Task.h"
+#include "tasks/ControllingTask.h"
 #include "devices/TempSensor.h"
 #include "Subject.h"
 
-class TemperatureMonitoringTask : public Task, public Subject, public Observer
+class TemperatureMonitoringTask : public ControllingTask, public Subject, public Observer
 {
 private:
     TempSensor* temperatureSensor;

@@ -36,7 +36,7 @@ void DoorControlTask::tick()
             this->door->close();
             this->state = CLOSING;
             this->notify(Event::WASTE_RECEIVED);
-            this->timeInState = millis();            
+            this->timeInState = millis();
         }
         break;
 
@@ -106,7 +106,7 @@ void DoorControlTask::tick()
         {
             this->door->on();
             this->door->close();
-            this->notify(Event::DONE_EMPTYING);
+            this->notify(Event::DONE_EMPTYING);\
             this->state = CLOSING;
             this->timeInState = millis();
         }
