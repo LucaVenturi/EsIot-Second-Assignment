@@ -20,6 +20,9 @@
 #include "devices/SonarImpl.h"
 #include "tasks/WasteLevelDetectionTask.h"
 #include "tasks/OperatorCommunicationTask.h"
+#include <tasks/LCDDisplayTask.h>
+#include "devices/UserLCD.h"
+#include "devices/LCDi2c.h"
 
 
 Scheduler sched;
@@ -30,7 +33,7 @@ void setup() {
 
     /* Create task for the user detection, needs a user detector, in this case a PIR */
     PIR* userDetector = new PIRImpl(2 /*pin*/, 5000 /* calibration time*/);
-    Task* userDetection = new UserDetectionTask(userDetector, 2, 10000);
+    UserDetectionTask* userDetection = new UserDetectionTask(userDetector, 2, 10000);
     userDetection->init(100);
 
     /* Create task for waste level monitoring. */
@@ -53,6 +56,7 @@ void setup() {
     Door* door = new DoorImpl(10);
     DoorControlTask* doorControl = new DoorControlTask(door, 10000);
     buttonControl->attach(doorControl);
+    wasteLvlDetection->attach(doorControl);
     doorControl->init(500);
 
     /* Create task for the control of lights */
@@ -62,6 +66,7 @@ void setup() {
     buttonControl->attach(lightsControl);
     tempMonitor->attach(lightsControl);
     wasteLvlDetection->attach(lightsControl);
+    userDetection->attach(lightsControl);
     lightsControl->init(200);
 
     /* Create task for the communication with the operator */
@@ -69,6 +74,16 @@ void setup() {
     commTask->attach(tempMonitor);
     commTask->attach(doorControl);
     commTask->init(500);
+
+    /* Create task for lcd */
+    UserLCD* lcd = new LCDi2c(0x27, 20, 4);
+    LCDDisplayTask* lcdDisplay = new LCDDisplayTask(lcd);
+    tempMonitor->attach(lcdDisplay);
+    wasteLvlDetection->attach(lcdDisplay);
+    userDetection->attach(lcdDisplay);
+    buttonControl->attach(lcdDisplay);
+    doorControl->attach(lcdDisplay);
+    lcdDisplay->init(100);
 
     wasteLvlDetection->addTaskToBeControlled(buttonControl);
     tempMonitor->addTaskToBeControlled(buttonControl);
@@ -80,6 +95,7 @@ void setup() {
     sched.addTask(doorControl);
     sched.addTask(lightsControl);
     sched.addTask(commTask);
+    sched.addTask(lcdDisplay);
 }
 
 void loop() {

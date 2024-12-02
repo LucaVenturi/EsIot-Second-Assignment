@@ -46,12 +46,20 @@ void LCDDisplayTask::tick()
             lcd->clear();
             lcd->write("PROBLEM DETECTED");
         }
+        else if (eventReady && lastEvent == Event::CONTAINER_FULL)
+        {
+            eventReady = false;
+            state = CONTAINER_FULL;
+            lcd->clear();
+            lcd->write("CONTAINER FULL");
+        }
         break;
     case USER_INPUTTING:
         if (eventReady && lastEvent == Event::WASTE_RECEIVED)
         {
             eventReady = false;
             state = ACK_WASTE_RECEIVED;
+            timeWasteReceived = millis();
             lcd->clear();
             lcd->write("WASTE RECEIVED");
             // forse disabilitare le altre task finche non ha mostrato all'utente waste received per 2 secondi.
@@ -73,12 +81,12 @@ void LCDDisplayTask::tick()
         break;
     
     case ACK_WASTE_RECEIVED:
-        static unsigned long time = millis();
-        if (millis() - time >= 2000)
+        if (millis() - timeWasteReceived >= 2000)
         {
             state = USER_NEAR;
             lcd->clear();
             lcd->write("PRESS OPEN TO ENTER WASTE");
+            // forse riabilita
         }
         break;
     case TEMP_PROBLEM:

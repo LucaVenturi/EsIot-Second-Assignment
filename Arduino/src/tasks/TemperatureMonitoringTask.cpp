@@ -15,8 +15,8 @@ void TemperatureMonitoringTask::init(int period)
 void TemperatureMonitoringTask::tick()
 {
     this->temperatureSensor->sync();
-    // Serial.println("temp: " + String(this->temperatureSensor->getTemperature()));
-    // Serial.println("temp monitor state: " + String(this->state));
+    Serial.println("temp: " + String(this->temperatureSensor->getTemperature()));
+    Serial.println("temp monitor state: " + String(this->state));
     switch (this->state)
     {
     case TEMP_OK:

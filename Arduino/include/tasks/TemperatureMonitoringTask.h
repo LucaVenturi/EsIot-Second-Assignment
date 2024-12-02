@@ -9,7 +9,7 @@ class TemperatureMonitoringTask : public ControllingTask, public Subject, public
 {
 private:
     TempSensor* temperatureSensor;
-    const float DANGER_TEMP = 24.0f;
+    const float DANGER_TEMP = 30.0f;
     unsigned long startTimeOverheat;
     unsigned const int OVERHEAT_TIME = 5000;
     bool eventReceived = false;

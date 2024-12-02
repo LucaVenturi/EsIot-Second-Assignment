@@ -26,7 +26,7 @@ void DoorControlTask::tick()
                 eventReady && 
                 (lastEvent == Event::BTN_CLOSE_PRESSED || 
                 lastEvent == Event::CONTAINER_FULL || 
-                lastEvent == Event::TEMP_HIGH) 
+                lastEvent == Event::TEMP_HIGH)
             )
             || millis() - this->timeInState >= this->timeout)
         {

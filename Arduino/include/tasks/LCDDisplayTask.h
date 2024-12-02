@@ -13,6 +13,7 @@ private:
     bool updated;          // Flag per sapere se il messaggio è stato aggiornato
     bool eventReady;
     Event lastEvent;
+    unsigned long timeWasteReceived;
     enum {
         NONE,
         USER_NEAR,
