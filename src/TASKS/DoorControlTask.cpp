@@ -67,7 +67,7 @@ void DoorControlTask::tick()
                 this->state = OPENING;
                 this->timeInState = millis();
             }
-            else if (this->lastEvent == Event::EMPTYING)
+            else if (this->lastEvent == Event::EMPTY_MSG)
             {
                 this->state = TO_EMPTYING;
                 this->door->on();

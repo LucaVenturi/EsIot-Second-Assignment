@@ -30,7 +30,7 @@ void TemperatureMonitoringTask::tick()
 
     case OVERHEATING:
         this->temperatureSensor->sync();
-        if ( ! this->temperatureSensor->getTemperature() >= DANGER_TEMP )
+        if ( ! (this->temperatureSensor->getTemperature() >= DANGER_TEMP) )
         {
             this->state = TEMP_OK;
         } 
@@ -43,8 +43,20 @@ void TemperatureMonitoringTask::tick()
 
     case ALARM:
         // se temp sotto la soglia o se l'operatore fa quel che deve fare.
+        if (this->eventReceived && this->lastEvent == Event::RESTORE_MSG)
+        {
+            this->state = TEMP_OK;
+            this->notify(TEMP_LOW);
+        }
+        
         // this->state = TEMP_OK;
         // this->notify(TEMP_LOW);
         break;
     }
+}
+
+void TemperatureMonitoringTask::update(Event event)
+{
+    this->eventReceived = true;
+    this->lastEvent = event;
 }

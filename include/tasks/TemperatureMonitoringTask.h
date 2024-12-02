@@ -5,13 +5,15 @@
 #include "devices/TempSensor.h"
 #include "Subject.h"
 
-class TemperatureMonitoringTask : public Task, public Subject
+class TemperatureMonitoringTask : public Task, public Subject, public Observer
 {
 private:
     TempSensor* temperatureSensor;
     const float DANGER_TEMP = 24.0f;
     unsigned long startTimeOverheat;
     unsigned const int OVERHEAT_TIME = 5000;
+    bool eventReceived = false;
+    Event lastEvent;
     enum {
         TEMP_OK,
         OVERHEATING,
@@ -23,6 +25,7 @@ public:
     ~TemperatureMonitoringTask();
     void init(int period);
     void tick();
+    void update(Event event);
 };
 
 #endif // __TEMPMONITORTASK

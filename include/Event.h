@@ -12,7 +12,8 @@ enum Event {
     CONTAINER_EMPTY,
     BTN_OPEN_PRESSED,
     BTN_CLOSE_PRESSED,
-    EMPTYING
+    EMPTY_MSG,
+    RESTORE_MSG
 };
 
 #endif

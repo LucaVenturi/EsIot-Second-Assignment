@@ -19,7 +19,7 @@
 #include "tasks/LightsControlTask.h"
 #include "devices/SonarImpl.h"
 #include "tasks/WasteLevelDetectionTask.h"
-
+#include "tasks/OperatorCommunicationTask.h"
 
 
 Scheduler sched;
@@ -55,6 +55,7 @@ void setup() {
     buttonControl->attach(doorControl);
     doorControl->init(500);
 
+    /* Create task for the control of lights */
     Light* l1 = new Led(5);
     Light* l2 = new Led(6);
     LightsControlTask* lightsControl = new LightsControlTask(l1, l2);
@@ -63,12 +64,18 @@ void setup() {
     wasteLvlDetection->attach(lightsControl);
     lightsControl->init(200);
 
+    /* Create task for the communication with the operator */
+    OperatorCommunicationTask* commTask = new OperatorCommunicationTask();
+    commTask->attach(tempMonitor);
+    commTask->attach(doorControl);
+
     sched.addTask(userDetection);
     sched.addTask(wasteLvlDetection);
     sched.addTask(tempMonitor);
     sched.addTask(buttonControl);
     sched.addTask(doorControl);
     sched.addTask(lightsControl);
+    sched.addTask(commTask);
 }
 
 void loop() {
