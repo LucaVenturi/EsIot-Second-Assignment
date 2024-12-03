@@ -5,7 +5,6 @@
  *
  */
 public interface CommChannel {
-	
 	/**
 	 * Send a message represented by a string (without new line).
 	 * 

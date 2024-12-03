@@ -28,8 +28,6 @@
 Scheduler sched;
 
 void setup() {
-
-    //Serial.begin(9600);
     
     sched.init(100);
 
@@ -117,11 +115,14 @@ void setup() {
     sched.addTask(tempMonitor);
     sched.addTask(buttonControl);
     sched.addTask(doorControl);
+    sched.addTask(lcdDisplay);
     sched.addTask(lightsControl);
     sched.addTask(commTask);
-    sched.addTask(lcdDisplay);
 
+
+    Serial.begin(9600);
     MsgService.init(); // Initialize the MsgService for serial communication
+
 }
 
 

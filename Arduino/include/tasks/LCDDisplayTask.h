@@ -10,13 +10,11 @@ class LCDDisplayTask : public Task, public Observer
 private:
     UserLCD* lcd; // Puntatore al display LCD
     String message;        // Messaggio da visualizzare sul display
-    String lastMessage;
     bool updated;          // Flag per sapere se il messaggio è stato aggiornato
     bool eventReady;
     Event lastEvent;
     unsigned long timeWasteReceived;
     enum LCDState{
-        NONE,
         USER_NEAR,
         USER_INPUTTING,
         ACK_WASTE_RECEIVED,
@@ -24,7 +22,6 @@ private:
         FULL,
         EMPTYING
     } state;
-    LCDState lastState;
 
     void changeState(LCDState newState, const String message);
 

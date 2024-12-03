@@ -14,35 +14,37 @@ void LCDDisplayTask::init(int period)
     Task::init(period);
     //this->setActive(false);
     this->lcd->init();
+    this->lcd->on();
+    changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
     this->lcd->off();
-    this->state = NONE;
-    this->lastState = USER_NEAR;
-    this->lastMessage = "PRESS OPEN TO ENTER WASTE";
 }
 
 void LCDDisplayTask::tick()
 {
-
     // a prescinedere dallo stato. 
     // TODO: ho scoperto che esiste la funzione noDisplay() che spegne lo schermo ma salva il contenuto, mi risparmio di memorizzare lo stato precedente quando va in sleep.
-    if (eventReady && lastEvent == Event::NO_MOTION)
-    {
-        eventReady = false;
-        state = NONE;
-        lcd->off();
-        return;
-    }
+    // if (eventReady && lastEvent == Event::MOTION_DETECTED)
+    // {
+    //     lcd->on();
+    //     eventReady = false;
+    //     return;
+    // }
+    // if (eventReady && lastEvent == Event::NO_MOTION)
+    // {
+    //     lcd->off();
+    //     eventReady = false;
+    //     return;
+    // }
     
     switch (this->state)
     {
-    
-    case NONE:
-        if (eventReady && lastEvent == Event::MOTION_DETECTED)
-            {
-                this->lcd->on();
-                changeState(lastState, lastMessage);
-            }
-        break;
+    // case NONE:
+    //     if (eventReady && lastEvent == Event::MOTION_DETECTED)
+    //         {
+    //             this->lcd->on();
+    //             changeState(lastState, lastMessage);
+    //         }
+    //     break;
 
     case USER_NEAR:
         if (eventReady && lastEvent == Event::BTN_OPEN_PRESSED)
@@ -79,7 +81,7 @@ void LCDDisplayTask::tick()
         break;
 
     case EMPTYING:
-        if (eventReady && lastEvent == Event::DONE_EMPTYING)
+        if ( eventReady && ( lastEvent == Event::CONTAINER_EMPTY || lastEvent == Event::DONE_EMPTYING ) )
             changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
         else if (eventReady && lastEvent == Event::TEMP_HIGH)
             changeState(TEMP_PROBLEM, "PROBLEM DETECTED");
@@ -100,14 +102,24 @@ void LCDDisplayTask::tick()
 }
 
 void LCDDisplayTask::update(Event event)
-{
+{   
+    if (event == Event::MOTION_DETECTED)
+    {
+        lcd->on();
+        eventReady = false;
+        return;
+    }
+    if (event == Event::NO_MOTION)
+    {
+        lcd->off();
+        eventReady = false;
+        return;
+    }
     eventReady = true;
     lastEvent = event;
 }
 
 void LCDDisplayTask::changeState(LCDState newState, const String message) {
-    lastState = /* (state == NONE) ? USER_NEAR : */ state;
-    lastMessage = message;
     state = newState;
     lcd->clear();
     lcd->write(message);

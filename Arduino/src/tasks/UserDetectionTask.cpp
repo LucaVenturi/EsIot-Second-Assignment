@@ -88,9 +88,9 @@ void UserDetectionTask::sleep()
     set_sleep_mode(SLEEP_MODE_IDLE);    // Imposta la modalità sleep
     sleep_enable();                 // Abilita il sleep
     power_adc_disable();            // Disabilita l'ADC
-    // power_timer0_disable();         // Disabilita timer0
-    // power_timer1_disable();         // Disabilita timer1
-    // power_timer2_disable();         // Disabilita timer2
+    power_timer0_disable();         // Disabilita timer0
+    power_timer1_disable();         // Disabilita timer1
+    power_timer2_disable();         // Disabilita timer2
     sleep_mode();                   // Vai in sleep mode
 
     // La CPU si sveglierà quando viene generato un interrupt (PIR)

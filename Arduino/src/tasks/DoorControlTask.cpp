@@ -33,16 +33,16 @@ void DoorControlTask::tick()
             this->door->on();
             this->door->close();
             this->state = CLOSING;
-            this->notify(Event::WASTE_RECEIVED);
+
+            if (lastEvent == Event::BTN_CLOSE_PRESSED)
+                this->notify(Event::WASTE_RECEIVED);
+            
             this->timeInState = millis();
+            eventReady = false;
         }
         break;
 
     case OPENING:
-
-        // this->door->open();
-        // this->state = OPEN;
-        // this->timeInState = millis();
 
         if (!this->door->isMoving())
         {
@@ -50,20 +50,17 @@ void DoorControlTask::tick()
             this->state = OPEN;
             this->timeInState = millis();
         }
-
         break;
 
     case CLOSED:
         // se segnale di open o empty passa allo stato corretto.
+        
         if (this->eventReady)
         {
             if (this->lastEvent == BTN_OPEN_PRESSED)
             {
-                //Serial.println("accendo porta");
                 this->door->on();
-                //Serial.println("apro porta");
                 this->door->open();
-                //Serial.println("cambio stato");
                 this->state = OPENING;
                 this->timeInState = millis();
             }
@@ -74,9 +71,7 @@ void DoorControlTask::tick()
                 this->door->reverse();
                 this->timeInState = millis();
             }
-            //Serial.println("tolgo evento da coda");
             eventReady = false;
-            //Serial.println("Tempo impiegato: " + String(millis() - a));
         }
         
         break;

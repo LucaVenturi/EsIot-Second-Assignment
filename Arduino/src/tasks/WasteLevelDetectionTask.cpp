@@ -16,7 +16,9 @@ void WasteLevelDetectionTask::tick()
 {
     this->wasteLvlDetector->sync();
     const float fillPercent = calculatePercentage();
-    MsgService.sendMsg("LEVEL: " + String(fillPercent));
+    // MsgService.sendMsg("LEVEL: " + String(fillPercent));
+    Serial.print("LEVEL: ");
+    Serial.println(fillPercent);
     switch (this->state)
     {
         case NOT_FULL:
@@ -39,6 +41,7 @@ void WasteLevelDetectionTask::tick()
                     this->state = NOT_FULL;
                     this->notify(Event::CONTAINER_EMPTY);
                     this->enableAllTasks();
+                    this->eventReady = false;
                 }
             }
             break;

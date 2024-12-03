@@ -25,18 +25,19 @@ void LCDi2c::clear()
 
 void LCDi2c::on()
 {
-    this->lcd.on();
+    // this->lcd.on();
+    this->lcd.display();
     this->lcd.backlight();
-    //this->lcd.display();
     this->lcdOn = true;
 }
 
 
 void LCDi2c::off()
 {
+    // this->lcd.noBacklight();
+    // this->lcd.off();
     this->lcd.noBacklight();
-    this->lcd.off();
-    //this->lcd.noDisplay();
+    this->lcd.noDisplay();
     this->lcdOn = false;
 }
 
