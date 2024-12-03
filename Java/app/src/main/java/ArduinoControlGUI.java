@@ -86,7 +86,7 @@ public class ArduinoControlGUI {
                         SwingUtilities.invokeLater(() -> temperatureLabel.setText(temp + " °C"));
                     } else if (msg.startsWith("LEVEL: ")) {
                         String level = msg.substring(7);
-                        SwingUtilities.invokeLater(() -> levelLabel.setText(level));
+                        SwingUtilities.invokeLater(() -> levelLabel.setText(level + " %"));
                     }
                 }
                 Thread.sleep(100); // eseguita ogni 100ms (come lo scheduler arduino)

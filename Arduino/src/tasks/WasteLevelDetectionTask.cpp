@@ -1,7 +1,7 @@
 #include "tasks/WasteLevelDetectionTask.h"
 #include "SerialComm/MsgService.h"
 
-WasteLevelDetectionTask::WasteLevelDetectionTask(Sonar *sonar) : wasteLvlDetector(sonar)
+WasteLevelDetectionTask::WasteLevelDetectionTask(Sonar *sonar) : wasteLvlDetector(sonar) 
 {
 }
 
@@ -15,11 +15,12 @@ void WasteLevelDetectionTask::init(int period)
 void WasteLevelDetectionTask::tick()
 {
     this->wasteLvlDetector->sync();
-    MsgService.sendMsg("LEVEL: " + String(this->wasteLvlDetector->getDistance()));
+    const float fillPercent = calculatePercentage();
+    MsgService.sendMsg("LEVEL: " + String(fillPercent));
     switch (this->state)
     {
         case NOT_FULL:
-            if (this->wasteLvlDetector->getDistance() <= THRESHOLD)
+            if (fillPercent >= THRESHOLD)
             {
                 this->state = FULL;
                 // signal other tasks the container is full;
@@ -48,4 +49,11 @@ void WasteLevelDetectionTask::update(Event e)
 {
     this->eventReady = true;
     this->lastEvent = e;
+}
+
+float WasteLevelDetectionTask::calculatePercentage()
+{
+    float d = constrain(this->wasteLvlDetector->getDistance(), 0, this->MAX_DEPTH);
+    
+    return  100 - ( (d * 100) / this->MAX_DEPTH );
 }
