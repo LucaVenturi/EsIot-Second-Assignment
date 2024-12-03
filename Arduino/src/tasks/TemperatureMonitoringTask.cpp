@@ -1,6 +1,6 @@
 #include "tasks/TemperatureMonitoringTask.h"
 #include <Arduino.h>
-
+#include "SerialComm/MsgService.h"
 
 TemperatureMonitoringTask::TemperatureMonitoringTask(TempSensor *TempSensor) : temperatureSensor(TempSensor)
 {
@@ -15,12 +15,11 @@ void TemperatureMonitoringTask::init(int period)
 void TemperatureMonitoringTask::tick()
 {
     this->temperatureSensor->sync();
-    Serial.println("temp: " + String(this->temperatureSensor->getTemperature()));
-    Serial.println("temp monitor state: " + String(this->state));
+    MsgService.sendMsg("TEMP: " + String(this->temperatureSensor->getTemperature()));
+
     switch (this->state)
     {
     case TEMP_OK:
-        this->temperatureSensor->sync();
         if (this->temperatureSensor->getTemperature() >= this->DANGER_TEMP)
         {
             this->state = OVERHEATING;
@@ -29,7 +28,6 @@ void TemperatureMonitoringTask::tick()
         break;
 
     case OVERHEATING:
-        this->temperatureSensor->sync();
         if ( ! (this->temperatureSensor->getTemperature() >= DANGER_TEMP) )
         {
             this->state = TEMP_OK;

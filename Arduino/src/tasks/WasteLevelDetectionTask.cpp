@@ -1,5 +1,5 @@
 #include <tasks/WasteLevelDetectionTask.h>
-
+#include "SerialComm/MsgService.h"
 
 WasteLevelDetectionTask::WasteLevelDetectionTask(Sonar *sonar) : wasteLvlDetector(sonar)
 {
@@ -13,10 +13,11 @@ void WasteLevelDetectionTask::init(int period)
 
 void WasteLevelDetectionTask::tick()
 {
+    this->wasteLvlDetector->sync();
+    MsgService.sendMsg("LEVEL: " + String(this->wasteLvlDetector->getDistance()));
     switch (this->state)
     {
         case NOT_FULL:
-            this->wasteLvlDetector->sync();
             if (this->wasteLvlDetector->getDistance() <= THRESHOLD)
             {
                 this->state = FULL;

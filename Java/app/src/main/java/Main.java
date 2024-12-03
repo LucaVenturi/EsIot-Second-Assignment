@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        String portName = "COM4";   // Cambia con la tua porta
+        String portName = "COM4";   // TODO: leggere da args[0] la porta
         int baudRate = 9600;
 
         SwingUtilities.invokeLater(() -> {

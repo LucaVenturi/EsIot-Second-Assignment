@@ -1,5 +1,4 @@
 #include "tasks/OperatorCommunicationTask.h"
-#include <Arduino.h>
 
 OperatorCommunicationTask::OperatorCommunicationTask() : state(IDLE), receivedCommand("") {}
 
@@ -10,7 +9,6 @@ void OperatorCommunicationTask::init(int period)
     Task::init(period);
     this->state = IDLE;
     this->receivedCommand = "";
-    MsgService.init(); // Initialize the MsgService for serial communication
 }
 
 void OperatorCommunicationTask::tick()

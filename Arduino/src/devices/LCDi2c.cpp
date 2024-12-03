@@ -40,3 +40,8 @@ void LCDi2c::off()
     this->lcd.off();
     this->lcdOn = false;
 }
+
+void LCDi2c::init()
+{
+    this->lcd.init();
+}

@@ -12,7 +12,10 @@ LCDDisplayTask::~LCDDisplayTask()
 void LCDDisplayTask::init(int period)
 {
     Task::init(period);
+    this->lcd->init();
     this->state = NONE;
+    this->lastState = USER_NEAR;
+    this->lastMessage = "PRESS OPEN TO ENTER WASTE";
 }
 
 void LCDDisplayTask::tick()
@@ -36,7 +39,7 @@ void LCDDisplayTask::tick()
         if (eventReady && lastEvent == Event::MOTION_DETECTED)
             {
                 this->lcd->on();
-                changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
+                changeState(lastState, lastMessage);
             }
         break;
 
@@ -65,6 +68,12 @@ void LCDDisplayTask::tick()
     case ACK_WASTE_RECEIVED:
         if (millis() - timeWasteReceived >= 2000)
         {
+            Serial.println(String(millis() - timeWasteReceived));
+            Serial.println(String(millis() - timeWasteReceived));
+            Serial.println(String(millis() - timeWasteReceived));
+            Serial.println(String(millis() - timeWasteReceived));
+            Serial.println(String(millis() - timeWasteReceived));
+            Serial.println(String(millis() - timeWasteReceived));
             state = USER_NEAR;
             lcd->clear();
             lcd->write("PRESS OPEN TO ENTER WASTE");
@@ -90,7 +99,9 @@ void LCDDisplayTask::update(Event event)
     lastEvent = event;
 }
 
-void LCDDisplayTask::changeState(LCDState newState, const char* message) {
+void LCDDisplayTask::changeState(LCDState newState, const String message) {
+    lastState = state;
+    lastMessage = message;
     state = newState;
     lcd->clear();
     lcd->write(message);

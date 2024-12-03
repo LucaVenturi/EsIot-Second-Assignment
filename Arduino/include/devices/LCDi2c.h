@@ -17,6 +17,7 @@ class LCDi2c : public UserLCD
         void clear();
         void on();
         void off();
+        void init();
 };
 
 

@@ -27,6 +27,9 @@ dependencies {
     implementation("io.github.java-native:jssc:2.9.6")
 
     implementation("org.slf4j:slf4j-simple:2.0.9")
+
+    // Libreria per i grafici, per il momento sto bene senza.
+    //implementation("org.jfree:jfreechart:1.5.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

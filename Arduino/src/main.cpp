@@ -28,7 +28,9 @@
 Scheduler sched;
 
 void setup() {
+
     //Serial.begin(9600);
+
     sched.init(100);
 
     /* Create task for the user detection, needs a user detector, in this case a PIR */
@@ -96,6 +98,21 @@ void setup() {
     sched.addTask(lightsControl);
     sched.addTask(commTask);
     sched.addTask(lcdDisplay);
+
+    MsgService.init(); // Initialize the MsgService for serial communication
+
+
+    // TODO: Verificare bene cosa succede all'avvio. -- FATTO
+    // TODO: Valutare cosa succede se il sistema va in sleep (nessun movimento rilevato) mentre la porta è aperta o in reverse. -- rimane aperta, controllare ordine di esecuzione.
+    // TODO: Controllare se l'operatore puo fare EMPTY e RESTORE mentre non è rilevato movimento.
+    // TODO: Valutare se disabilitare input utente mentre viene mostrato WASTE RECEIVED sull'lcd. -- PER ORA NO
+    // TODO: Verificare i led.
+    // TODO: Comunicare all'Operator Dashboard la temperatura e il livello corrente.
+    // TODO: quando va in sleep l'lcd memorizza lo stato. -- FATTO
+    // TODO: impostare il motore a 0 all'avvio.
+    // TODO: regolare i tempi di timeout per ogni cosa.
+    // TODO: aggiungere stringa di messagio mentre sta svuotando.
+    // TODO: dopo un paio di minuti segna waste received e non cambia piu. forse si addormenta mentre c'è waste received e bugga tutto.
 }
 
 void loop() {

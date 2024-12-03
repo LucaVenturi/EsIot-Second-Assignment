@@ -10,6 +10,7 @@ class LCDDisplayTask : public Task, public Observer
 private:
     UserLCD* lcd; // Puntatore al display LCD
     String message;        // Messaggio da visualizzare sul display
+    String lastMessage;
     bool updated;          // Flag per sapere se il messaggio è stato aggiornato
     bool eventReady;
     Event lastEvent;
@@ -22,8 +23,9 @@ private:
         TEMP_PROBLEM,
         CONTAINER_FULL
     } state;
+    LCDState lastState;
 
-    void changeState(LCDState newState, const char* message);
+    void changeState(LCDState newState, const String message);
 
 public:
     LCDDisplayTask(UserLCD* lcd);
