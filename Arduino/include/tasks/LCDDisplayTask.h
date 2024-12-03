@@ -14,7 +14,7 @@ private:
     bool eventReady;
     Event lastEvent;
     unsigned long timeWasteReceived;
-    enum {
+    enum LCDState{
         NONE,
         USER_NEAR,
         USER_INPUTTING,
@@ -22,6 +22,8 @@ private:
         TEMP_PROBLEM,
         CONTAINER_FULL
     } state;
+
+    void changeState(LCDState newState, const char* message);
 
 public:
     LCDDisplayTask(UserLCD* lcd);

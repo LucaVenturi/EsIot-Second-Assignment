@@ -34,7 +34,7 @@ void LightsControlTask::tick()
         }
         break;
 
-    // MAGARI POSSO FARE UNO STATO SOLO DI ALLARME VISTO CHE NON CAMBIA NULLA CREDO.
+    // MAGARI POSSO FARE UN SOLO STATO DI ALLARME VISTO CHE NON CAMBIA NULLA CREDO.
     case FULL:
         if (lastEvent == CONTAINER_EMPTY)
         {

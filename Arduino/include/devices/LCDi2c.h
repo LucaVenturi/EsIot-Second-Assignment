@@ -10,10 +10,13 @@ class LCDi2c : public UserLCD
     private:
         LiquidCrystal_I2C lcd;
         const int rows, cols;
+        bool lcdOn;
     public:
         LCDi2c(int address, int columns, int rows);
         void write(const String msg);
         void clear();
+        void on();
+        void off();
 };
 
 
