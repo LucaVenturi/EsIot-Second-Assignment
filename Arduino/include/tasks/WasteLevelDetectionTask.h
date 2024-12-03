@@ -9,7 +9,7 @@ class WasteLevelDetectionTask : public ControllingTask, public Subject, public O
 {
 private:
     Sonar* wasteLvlDetector;
-    const float THRESHOLD = 96; /* % above which is considered full */
+    const float THRESHOLD = 95; /* % above which is considered full */
     const float MAX_DEPTH = 2;
     Event lastEvent;
     bool eventReady = false;

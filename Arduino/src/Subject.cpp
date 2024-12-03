@@ -2,14 +2,14 @@
 
 Subject::Subject() : numObservers(0) {}
 
-void Subject::attach(Observer *observer)
+void Subject::attachObserver(Observer *observer)
 {
     if (numObservers < 10) {  // Evita di superare la dimensione massima
         observers[numObservers++] = observer;
     }
 }
 
-void Subject::detach(Observer *observer)
+void Subject::detachObserver(Observer *observer)
 {
     for (int i = 0; i < numObservers; i++) {
         if (observers[i] == observer) {

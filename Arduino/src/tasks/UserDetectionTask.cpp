@@ -10,7 +10,7 @@
 
 
 UserDetectionTask::UserDetectionTask(PIR *userDetector, int interruptPin, unsigned long t)
-    : userDetector(userDetector), interruptPin(interruptPin), timeout(t)
+    : userDetector(userDetector), interruptPin(interruptPin), Tsleep(t)
 {
 }
 
@@ -68,7 +68,7 @@ void UserDetectionTask::tick()
                 this->state = DETECTED;
             }
             // Altrimenti se non rileva movimento ed è passato abbastanza tempo torna a DETECTING, ovvero in sleep.
-            else if (millis() - timeUndetected >= timeout)
+            else if (millis() - timeUndetected >= Tsleep)
             {
                 this->state = DETECTING;
                 this->notify(NO_MOTION);

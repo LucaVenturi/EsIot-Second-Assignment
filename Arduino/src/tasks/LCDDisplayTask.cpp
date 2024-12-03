@@ -1,6 +1,8 @@
 #include "tasks/LCDDisplayTask.h"
 #include <Arduino.h>
 
+#define T2 2000
+
 LCDDisplayTask::LCDDisplayTask(UserLCD* lcd) : lcd(lcd), message(""), updated(false)
 {
 }
@@ -71,7 +73,7 @@ void LCDDisplayTask::tick()
         break;
     
     case ACK_WASTE_RECEIVED:
-        if (millis() - timeWasteReceived >= 2000)
+        if (millis() - timeWasteReceived >= T2)
         {
             state = USER_NEAR;
             lcd->clear();
@@ -90,7 +92,7 @@ void LCDDisplayTask::tick()
         break;
 
     case TEMP_PROBLEM:
-        if (eventReady && lastEvent == Event::RESTORE_MSG)
+        if (eventReady && (lastEvent == Event::RESTORE_MSG || lastEvent == TEMP_LOW))
             changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
         break;
 

@@ -1,7 +1,7 @@
 #include "tasks/DoorControlTask.h"
 #include <Arduino.h>
 
-DoorControlTask::DoorControlTask(Door* d, long t) : door(d), timeout(t)
+DoorControlTask::DoorControlTask(Door* d, const unsigned long t1, const unsigned long t3) : door(d), timeoutAccepting(t1), timeoutEmptying(t3)
 {
 }
 
@@ -10,6 +10,10 @@ void DoorControlTask::init(int period)
     Task::init(period);
     //this->setActive(false);
     // TODO: VERIFICARE CHE VADA SU CLOSED.
+    this->door->on();
+    this->door->close();
+    while (this->door->isMoving()) {}
+    this->door->off();
     this->state = CLOSED;
     this->timeInState = millis();
 }
@@ -28,13 +32,13 @@ void DoorControlTask::tick()
                 lastEvent == Event::CONTAINER_FULL || 
                 lastEvent == Event::TEMP_HIGH)
             )
-            || millis() - this->timeInState >= this->timeout)
+            || millis() - this->timeInState >= this->timeoutAccepting)
         {
             this->door->on();
             this->door->close();
             this->state = CLOSING;
 
-            if (lastEvent == Event::BTN_CLOSE_PRESSED)
+            if (lastEvent == Event::BTN_CLOSE_PRESSED || millis() - this->timeInState >= this->timeoutAccepting)
                 this->notify(Event::WASTE_RECEIVED);
             
             this->timeInState = millis();
@@ -95,7 +99,7 @@ void DoorControlTask::tick()
         break;
 
     case EMPTYING:
-        if (millis() - this->timeInState >= this->timeout)
+        if (millis() - this->timeInState >= this->timeoutEmptying)
         {
             this->door->on();
             this->door->close();

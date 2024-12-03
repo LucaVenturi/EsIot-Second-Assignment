@@ -12,9 +12,9 @@ private:
 public:
     Subject();
 
-    void attach(Observer* observer);
+    void attachObserver(Observer* observer);
 
-    void detach(Observer* observer);
+    void detachObserver(Observer* observer);
 
     void notify(Event event);
 };

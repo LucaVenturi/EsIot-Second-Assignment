@@ -24,69 +24,90 @@
 #include "devices/UserLCD.h"
 #include "devices/LCDi2c.h"
 
+/* mettere questi in un file sarebbe top */
+#define CALIBRATION_TIME 10000
+#define SCHED_PERIOD 100
+#define TSLEEP 60000
+#define PIN_PIR 2
+#define PIN_SONAR_ECHO 9
+#define PIN_SONAR_TRIG 8
+#define ROOM_TEMP 23 /* leggerlo dal sensore sarebbe meglio i know... */
+#define PIN_BTN_OPEN 4
+#define PIN_BTN_CLOSE 3
+#define PIN_TEMP_SENSOR A0
+#define PIN_DOOR_SERVO 10
+#define T1 10000
+#define T3 5000
+#define PIN_L1 5
+#define PIN_L2 6
+#define ADDR_I2C_LCD 0x27
+#define LCD_ROWS 4
+#define LCD_COLS 20
+
 
 Scheduler sched;
 
 void setup() {
     
-    sched.init(100);
+    //sched.init(SCHED_PERIOD);
 
     /* Create task for the user detection, needs a user detector, in this case a PIR */
-    PIR* userDetector = new PIRImpl(2 /*pin*/, 10000 /* calibration time*/);
-    UserDetectionTask* userDetection = new UserDetectionTask(userDetector, 2, 10000);
+    PIR* userDetector = new PIRImpl(PIN_PIR, CALIBRATION_TIME);
+    UserDetectionTask* userDetection = new UserDetectionTask(userDetector, PIN_PIR, TSLEEP);
 
-    /* Create task for waste level monitoring. */
-    Sonar* wasteDetector = new SonarImpl(8, 9, 22);
+    /* Create task for waste level monitoring, uses a Sonar */
+    Sonar* wasteDetector = new SonarImpl(PIN_SONAR_TRIG, PIN_SONAR_ECHO, ROOM_TEMP);
     WasteLevelDetectionTask* wasteLvlDetection = new WasteLevelDetectionTask(wasteDetector);
 
     /* Create task for user input via buttons */
-    Button* btnOpen = new ButtonImpl(4);
-    Button* btnClose = new ButtonImpl(3);
+    Button* btnOpen = new ButtonImpl(PIN_BTN_OPEN);
+    Button* btnClose = new ButtonImpl(PIN_BTN_CLOSE);
     ButtonControlTask* buttonControl = new ButtonControlTask(btnOpen, btnClose);
 
-    /* Create task for temperature monitoring */
-    TempSensor* tempSensor = new TempSensorImpl(A0);
+    /* Create task for temperature monitoring*/
+    TempSensor* tempSensor = new TempSensorImpl(PIN_TEMP_SENSOR);
     TemperatureMonitoringTask* tempMonitor = new TemperatureMonitoringTask(tempSensor);
 
     /* Create task for controlling the door, implemented via a servo simulating a door*/
-    Door* door = new DoorImpl(10);
-    DoorControlTask* doorControl = new DoorControlTask(door, 10000);
+    Door* door = new DoorImpl(PIN_DOOR_SERVO);
+    DoorControlTask* doorControl = new DoorControlTask(door, T1, T3);
 
     /* Create task for the control of lights */
-    Light* l1 = new Led(5);
-    Light* l2 = new Led(6);
+    Light* l1 = new Led(PIN_L1);
+    Light* l2 = new Led(PIN_L2);
     LightsControlTask* lightsControl = new LightsControlTask(l1, l2);
 
-    /* Create task for the communication with the operator */
+    /* Create task for the communication with the operator dashboard*/
     OperatorCommunicationTask* commTask = new OperatorCommunicationTask();
 
     /* Create task for lcd */
-    UserLCD* lcd = new LCDi2c(0x27, 20, 4);
+    UserLCD* lcd = new LCDi2c(ADDR_I2C_LCD, LCD_COLS, LCD_ROWS);
     LCDDisplayTask* lcdDisplay = new LCDDisplayTask(lcd);
 
-    /* Attach tasks to each other */
-    buttonControl->attach(doorControl);
-    buttonControl->attach(lcdDisplay);
-    buttonControl->attach(lightsControl);
 
-    doorControl->attach(wasteLvlDetection);
-    doorControl->attach(lcdDisplay);
+    /* Attach observers to each task */
+    buttonControl->attachObserver(doorControl);
+    buttonControl->attachObserver(lcdDisplay);
+    buttonControl->attachObserver(lightsControl);
 
-    wasteLvlDetection->attach(lightsControl);
-    wasteLvlDetection->attach(doorControl);
-    wasteLvlDetection->attach(lcdDisplay);
+    doorControl->attachObserver(wasteLvlDetection);
+    doorControl->attachObserver(lcdDisplay);
 
-    tempMonitor->attach(doorControl);
-    tempMonitor->attach(lightsControl);
-    tempMonitor->attach(lcdDisplay);
+    wasteLvlDetection->attachObserver(lightsControl);
+    wasteLvlDetection->attachObserver(doorControl);
+    wasteLvlDetection->attachObserver(lcdDisplay);
 
-    userDetection->attach(lcdDisplay);
+    tempMonitor->attachObserver(doorControl);
+    tempMonitor->attachObserver(lightsControl);
+    tempMonitor->attachObserver(lcdDisplay);
 
-    commTask->attach(doorControl);
-    commTask->attach(lcdDisplay);
-    commTask->attach(tempMonitor);
+    userDetection->attachObserver(lcdDisplay);
 
-    // se ci sono problemi disattivano l'input utente.
+    commTask->attachObserver(doorControl);
+    commTask->attachObserver(lcdDisplay);
+    commTask->attachObserver(tempMonitor);
+
+    // Add the tasks that get controlled by other tasks, in this case I only deactivate and reactivate the button task when there is a problem and i want to disable the user input.
     wasteLvlDetection->addTaskToBeControlled(buttonControl);
     tempMonitor->addTaskToBeControlled(buttonControl);
 
@@ -100,50 +121,39 @@ void setup() {
     // userDetection->addTaskToBeControlled(lcdDisplay);
 
     /* Initialize tasks */
-    userDetection->init(100);
-    wasteLvlDetection->init(200);
-    tempMonitor->init(200);
-    buttonControl->init(100);
-    doorControl->init(200);
-    lightsControl->init(200);
-    commTask->init(200);
-    lcdDisplay->init(200);
+    userDetection->init(SCHED_PERIOD);
+    wasteLvlDetection->init(SCHED_PERIOD * 2);
+    tempMonitor->init(SCHED_PERIOD * 2);
+    buttonControl->init(SCHED_PERIOD);
+    doorControl->init(SCHED_PERIOD * 2);
+    lightsControl->init(SCHED_PERIOD * 2);
+    commTask->init(SCHED_PERIOD * 2);
+    lcdDisplay->init(SCHED_PERIOD * 2);
+
+    sched.init(SCHED_PERIOD);
 
     /* Add tasks to scheduler */
     sched.addTask(userDetection);
     sched.addTask(wasteLvlDetection);
-    sched.addTask(tempMonitor);
     sched.addTask(buttonControl);
     sched.addTask(doorControl);
+    sched.addTask(tempMonitor);
     sched.addTask(lcdDisplay);
     sched.addTask(lightsControl);
     sched.addTask(commTask);
 
-
+    /* Beging Serial and msgservice which uses serial */
     Serial.begin(9600);
-    MsgService.init(); // Initialize the MsgService for serial communication
+    MsgService.init();
 
 }
 
-
-    // TODO: Verificare bene cosa succede all'avvio. -- FATTO
-    // TODO: quando va in sleep l'lcd memorizza lo stato. -- FATTO
     // TODO: Valutare se disabilitare input utente mentre viene mostrato WASTE RECEIVED sull'lcd. -- PER ORA NO
-    // TODO: Comunicare all'Operator Dashboard la temperatura e il livello corrente. -- FATTO
+    // TODO: Valutare cosa succede se il sistema va in sleep (nessun movimento rilevato) mentre la porta è aperta o in reverse. -- rimane aperta.
 
-    // TODO: Valutare cosa succede se il sistema va in sleep (nessun movimento rilevato) mentre la porta è aperta o in reverse. -- rimane aperta, controllare ordine di esecuzione.
-
-
-
-    
     // TODO: Controllare se l'operatore puo fare EMPTY e RESTORE mentre non è rilevato movimento.
-    // TODO: Verificare i led.
-    // TODO: impostare il motore a 0 all'avvio.
-    // TODO: regolare i tempi di timeout per ogni cosa.
-    // TODO: aggiungere stringa di messagio mentre sta svuotando.
-    // TODO: dopo un paio di minuti segna waste received e non cambia piu. forse si addormenta mentre c'è waste received e bugga tutto.
-    // TODO: a volte dopo aver svuotato non si aggiornano le luci e credo non si aggiorni lo stato di wastelvl monitoring.
-
+    // FATTO: impostare il motore a 0 all'avvio.
+    // FATTO: regolare i tempi di timeout per ogni cosa.
 
 void loop() {
     sched.schedule();

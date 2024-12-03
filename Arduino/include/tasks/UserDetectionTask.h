@@ -13,7 +13,7 @@ class UserDetectionTask: public ControllingTask, public Subject
 private:
     PIR* userDetector;
     int interruptPin;
-    unsigned long timeout;
+    unsigned long Tsleep;
     unsigned long timeUndetected;
     enum {
         CALIBRATING,
@@ -25,7 +25,7 @@ private:
     void sleep();
 
 public:
-    UserDetectionTask(PIR* userDetector, int interruptPin, unsigned long timeout);
+    UserDetectionTask(PIR* userDetector, int interruptPin, unsigned long Tsleep);
     void init(int period);
     void tick();
 };
