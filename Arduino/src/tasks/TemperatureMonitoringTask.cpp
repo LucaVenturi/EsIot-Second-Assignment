@@ -9,6 +9,7 @@ TemperatureMonitoringTask::TemperatureMonitoringTask(TempSensor *TempSensor) : t
 void TemperatureMonitoringTask::init(int period)
 {
     Task::init(period);
+    //this->setActive(false);
     this->state = TEMP_OK;
 }
 

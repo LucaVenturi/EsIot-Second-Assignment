@@ -1,8 +1,8 @@
 #if !defined(__WASTEDETECTIONTASK__)
 #define __WASTEDETECTIONTASK__
 
-#include <tasks/ControllingTask.h>
-#include <devices/Sonar.h>
+#include "tasks/ControllingTask.h"
+#include "devices/Sonar.h"
 #include "Subject.h"
 
 class WasteLevelDetectionTask : public ControllingTask, public Subject, public Observer

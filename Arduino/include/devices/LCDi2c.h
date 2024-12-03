@@ -12,8 +12,8 @@ class LCDi2c : public UserLCD
         const int rows, cols;
         bool lcdOn;
     public:
-        LCDi2c(int address, int columns, int rows);
-        void write(const String msg);
+        LCDi2c(uint8_t address, int columns, int rows);
+        void write(const String& msg);
         void clear();
         void on();
         void off();

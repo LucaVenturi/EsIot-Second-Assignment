@@ -10,7 +10,7 @@ class UserLCD
     public:
         virtual void on() = 0;
         virtual void off() = 0;
-        virtual void write(const String msg) = 0;
+        virtual void write(const String& msg) = 0;
         virtual void clear() = 0;
         virtual void init() = 0;
 };

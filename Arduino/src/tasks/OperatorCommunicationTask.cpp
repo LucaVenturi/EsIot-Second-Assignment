@@ -7,6 +7,7 @@ OperatorCommunicationTask::~OperatorCommunicationTask() {}
 void OperatorCommunicationTask::init(int period)
 {
     Task::init(period);
+    this->setActive(false);
     this->state = IDLE;
     this->receivedCommand = "";
 }

@@ -2,11 +2,13 @@
 #define __USER_DETECT__
 
 #include "Task.h"
+#include "ControllingTask.h"
 #include "Subject.h"
 #include "devices/Led.h"
 #include "devices/PIR.h"
 
-class UserDetectionTask: public Task, public Subject
+
+class UserDetectionTask: public ControllingTask, public Subject
 {
 private:
     PIR* userDetector;

@@ -21,7 +21,8 @@ private:
         USER_INPUTTING,
         ACK_WASTE_RECEIVED,
         TEMP_PROBLEM,
-        CONTAINER_FULL
+        FULL,
+        EMPTYING
     } state;
     LCDState lastState;
 

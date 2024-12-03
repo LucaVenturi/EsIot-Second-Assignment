@@ -8,7 +8,7 @@ DoorControlTask::DoorControlTask(Door* d, long t) : door(d), timeout(t)
 void DoorControlTask::init(int period)
 {
     Task::init(period);
-
+    //this->setActive(false);
     // TODO: VERIFICARE CHE VADA SU CLOSED.
     this->state = CLOSED;
     this->timeInState = millis();
@@ -104,7 +104,7 @@ void DoorControlTask::tick()
         {
             this->door->on();
             this->door->close();
-            this->notify(Event::DONE_EMPTYING);\
+            this->notify(Event::DONE_EMPTYING);
             this->state = CLOSING;
             this->timeInState = millis();
         }

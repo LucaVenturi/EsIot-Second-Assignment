@@ -12,7 +12,9 @@ LCDDisplayTask::~LCDDisplayTask()
 void LCDDisplayTask::init(int period)
 {
     Task::init(period);
+    //this->setActive(false);
     this->lcd->init();
+    this->lcd->off();
     this->state = NONE;
     this->lastState = USER_NEAR;
     this->lastMessage = "PRESS OPEN TO ENTER WASTE";
@@ -20,19 +22,18 @@ void LCDDisplayTask::init(int period)
 
 void LCDDisplayTask::tick()
 {
-    // TODO: togliere duplicazione codice.
-    
-    // a prescinedere dallo stato
-    if (eventReady && lastEvent == NO_MOTION)
+
+    // a prescinedere dallo stato. 
+    // TODO: ho scoperto che esiste la funzione noDisplay() che spegne lo schermo ma salva il contenuto, mi risparmio di memorizzare lo stato precedente quando va in sleep.
+    if (eventReady && lastEvent == Event::NO_MOTION)
     {
         eventReady = false;
         state = NONE;
-        this->lcd->off();
+        lcd->off();
         return;
     }
     
-
-    switch (state)
+    switch (this->state)
     {
     
     case NONE:
@@ -46,10 +47,12 @@ void LCDDisplayTask::tick()
     case USER_NEAR:
         if (eventReady && lastEvent == Event::BTN_OPEN_PRESSED)
             changeState(USER_INPUTTING, "PRESS CLOSE WHEN DONE");
+        else if (eventReady && lastEvent == Event::EMPTY_MSG)
+            changeState(USER_INPUTTING, "CONTAINER IS BEING EMPTIED");
         else if (eventReady && lastEvent == Event::TEMP_HIGH)
             changeState(TEMP_PROBLEM, "PROBLEM DETECTED");
         else if (eventReady && lastEvent == Event::CONTAINER_FULL)
-            changeState(CONTAINER_FULL, "CONTAINER FULL");
+            changeState(FULL, "CONTAINER FULL");
         break;
 
     case USER_INPUTTING:
@@ -62,18 +65,12 @@ void LCDDisplayTask::tick()
         else if (eventReady && lastEvent == Event::TEMP_HIGH)
             changeState(TEMP_PROBLEM, "PROBLEM DETECTED");
         else if (eventReady && lastEvent == Event::CONTAINER_FULL)
-            changeState(CONTAINER_FULL, "CONTAINER FULL");
+            changeState(FULL, "CONTAINER FULL");
         break;
     
     case ACK_WASTE_RECEIVED:
         if (millis() - timeWasteReceived >= 2000)
         {
-            Serial.println(String(millis() - timeWasteReceived));
-            Serial.println(String(millis() - timeWasteReceived));
-            Serial.println(String(millis() - timeWasteReceived));
-            Serial.println(String(millis() - timeWasteReceived));
-            Serial.println(String(millis() - timeWasteReceived));
-            Serial.println(String(millis() - timeWasteReceived));
             state = USER_NEAR;
             lcd->clear();
             lcd->write("PRESS OPEN TO ENTER WASTE");
@@ -81,14 +78,23 @@ void LCDDisplayTask::tick()
         }
         break;
 
+    case EMPTYING:
+        if (eventReady && lastEvent == Event::DONE_EMPTYING)
+            changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
+        else if (eventReady && lastEvent == Event::TEMP_HIGH)
+            changeState(TEMP_PROBLEM, "PROBLEM DETECTED");
+        else if (eventReady && lastEvent == Event::CONTAINER_FULL)
+            changeState(FULL, "CONTAINER FULL");
+        break;
+
     case TEMP_PROBLEM:
         if (eventReady && lastEvent == Event::RESTORE_MSG)
             changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
         break;
 
-    case CONTAINER_FULL:
-        if (eventReady && lastEvent == Event::DONE_EMPTYING)
-            changeState(USER_NEAR, "PRESS OPEN TO ENTER WASTE");
+    case FULL:
+        if (eventReady && lastEvent == Event::EMPTY_MSG)
+            changeState(EMPTYING, "CONTAINER IS BEING EMPTIED");
         break;
     }
 }
@@ -100,7 +106,7 @@ void LCDDisplayTask::update(Event event)
 }
 
 void LCDDisplayTask::changeState(LCDState newState, const String message) {
-    lastState = state;
+    lastState = /* (state == NONE) ? USER_NEAR : */ state;
     lastMessage = message;
     state = newState;
     lcd->clear();

@@ -9,6 +9,7 @@ LightsControlTask::LightsControlTask(Light *l1, Light *l2) : L1(l1), L2(l2), eve
 void LightsControlTask::init(int period)
 {
     Task::init(period);
+    //this->setActive(false);
     this->state = OK;
     this->L1->switchOn();
     this->L2->switchOff();

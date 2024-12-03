@@ -1,4 +1,4 @@
-#include <tasks/WasteLevelDetectionTask.h>
+#include "tasks/WasteLevelDetectionTask.h"
 #include "SerialComm/MsgService.h"
 
 WasteLevelDetectionTask::WasteLevelDetectionTask(Sonar *sonar) : wasteLvlDetector(sonar)
@@ -8,6 +8,7 @@ WasteLevelDetectionTask::WasteLevelDetectionTask(Sonar *sonar) : wasteLvlDetecto
 void WasteLevelDetectionTask::init(int period)
 {
     Task::init(period);
+    //this->setActive(false);
     this->state = NOT_FULL;
 }
 

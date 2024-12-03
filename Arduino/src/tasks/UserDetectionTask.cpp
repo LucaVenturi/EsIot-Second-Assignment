@@ -1,6 +1,3 @@
-#include "tasks/UserDetectionTask.h"
-#include <Arduino.h>
-
 #include <Arduino.h>
 #include <avr/sleep.h>
 #include <avr/io.h>
@@ -9,6 +6,7 @@
 
 #include "tasks/Task.h"
 #include "Observer.h"
+#include "tasks/UserDetectionTask.h"
 
 
 UserDetectionTask::UserDetectionTask(PIR *userDetector, int interruptPin, unsigned long t)
@@ -37,8 +35,10 @@ void UserDetectionTask::tick()
         case CALIBRATING:
             // TODO: dont use a blocking operation but passively wait and enable all the other tasks once ready. other tasks start as deactivated.
             this->userDetector->waitCalibrationDone();  /* Blocking*/
+            // passa a detected perche si. lo dice la consegna.
             this->state = DETECTED;
             this->notify(MOTION_DETECTED);
+            //this->enableAllTasks();
             break;
 
         case DETECTING:
@@ -88,9 +88,9 @@ void UserDetectionTask::sleep()
     set_sleep_mode(SLEEP_MODE_IDLE);    // Imposta la modalità sleep
     sleep_enable();                 // Abilita il sleep
     power_adc_disable();            // Disabilita l'ADC
-    power_timer0_disable();         // Disabilita timer0
-    power_timer1_disable();         // Disabilita timer1
-    power_timer2_disable();         // Disabilita timer2
+    // power_timer0_disable();         // Disabilita timer0
+    // power_timer1_disable();         // Disabilita timer1
+    // power_timer2_disable();         // Disabilita timer2
     sleep_mode();                   // Vai in sleep mode
 
     // La CPU si sveglierà quando viene generato un interrupt (PIR)
